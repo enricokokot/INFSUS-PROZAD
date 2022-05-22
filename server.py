@@ -23,7 +23,11 @@ def add_item(json_request):
         price = json_request["price"]
         with orm.db_session:
             Item(name=name, category=category, price=price)
-            response = {"response": "Success"}
+            db_querry = orm.select(x for x in Item)[:]
+            results_list = []
+            for r in db_querry:
+                results_list.append(r.to_dict())
+            response = {"response": "Success", "data": results_list}
             return response
     except Exception as e:
         return {"response": "Fail", "error": e}
@@ -73,10 +77,15 @@ def manager():
         response = add_item(json_request)
 
         if response["response"] == "Success":
-            return make_response(render_template("manager.html"), 200)
+            return make_response(render_template("manager.html", items=response["data"]), 200)
         else:
             return make_response(jsonify(response), 400)
-    return render_template('manager.html')
+    else:
+        response = get_all_items()
+        if response["response"] == "Success":
+            return make_response(render_template("manager.html", items=response["data"]), 200)
+        else:
+            return make_response(jsonify(response), 400)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, make_response, render_template, request
 from pony import orm
+from datetime import datetime
 
 DB = orm.Database()
 
@@ -11,6 +12,13 @@ class Item(DB.Entity):
     category = orm.Required(str)
     price = orm.Required(float)
     amount = orm.Required(int)
+
+
+class Receipt(DB.Entity):
+    time = orm.Required(str, unique=True)
+    items = orm.Required(orm.StrArray)
+    amounts = orm.Required(orm.IntArray)
+    total_price = orm.Required(float)
 
 
 DB.bind(provider="sqlite", filename="database.sqlite", create_db=True)
@@ -75,10 +83,20 @@ def update_item(json_request):
 def sell_items(json_request):
     try:
         with orm.db_session:
+            sold_items = []
+            total_cost = 0
+            amount_sold = []
             for item_name, sold_amount in json_request.items():
-                if (sold_amount):
+                if (int(sold_amount) > 0):
                     item = Item.get(name=item_name)
                     item.amount -= int(sold_amount)
+                    sold_items.append(item.name)
+                    amount_sold.append(int(sold_amount))
+                    total_cost += int(sold_amount) * item.price
+            Receipt(time=str(datetime.now()),
+                    items=sold_items,
+                    amounts=amount_sold,
+                    total_price=total_cost)
             db_querry = orm.select(x for x in Item)[:]
             results_list = []
             for r in db_querry:

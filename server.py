@@ -10,6 +10,7 @@ class Item(DB.Entity):
     name = orm.Required(str, unique=True)
     category = orm.Required(str)
     price = orm.Required(float)
+    amount = orm.Required(int)
 
 
 DB.bind(provider="sqlite", filename="database.sqlite", create_db=True)
@@ -21,8 +22,9 @@ def add_item(json_request):
         name = json_request["name"]
         category = json_request["category"]
         price = json_request["price"]
+        amount = json_request["amount"]
         with orm.db_session:
-            Item(name=name, category=category, price=price)
+            Item(name=name, category=category, price=price, amount=amount)
             db_querry = orm.select(x for x in Item)[:]
             results_list = []
             for r in db_querry:
@@ -46,23 +48,69 @@ def get_all_items():
         return {"response": "Fail", "error": e}
 
 
+def update_item(json_request):
+    try:
+        name = json_request["name"]
+        category = json_request["category"]
+        price = json_request["price"]
+        amount = json_request["amount"]
+        with orm.db_session:
+            item = Item.get(name=name)
+            if (price):
+                item.price = price
+            if (category):
+                item.category = category
+            if (amount):
+                item.amount = amount
+            db_querry = orm.select(x for x in Item)[:]
+            results_list = []
+            for r in db_querry:
+                results_list.append(r.to_dict())
+            response = {"response": "Success", "data": results_list}
+            return response
+    except Exception as e:
+        return {"response": "Fail", "error": e}
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
 
 
-@app.route('/register', methods=["GET"])
+@app.route('/register', methods=["GET", "PATCH"])
 def register():
-    response = get_all_items()
-    if response["response"] == "Success":
-        return make_response(render_template("register.html", items=response["data"]), 200)
+    if request.method == "PATCH":
+        return make_response(request.form)
     else:
-        return make_response(jsonify(response), 400)
+        response = get_all_items()
+        if response["response"] == "Success":
+            return make_response(render_template("register.html", items=response["data"]), 200)
+        else:
+            return make_response(jsonify(response), 400)
 
 
-@app.route('/manager', methods=["POST", "GET"])
+@app.route('/manager', methods=["POST", "GET", "PATCH"])
 def manager():
-    if request.method == "POST":
+    if request.form.get("_method") == "PATCH":
+        try:
+            json_request = {}
+            for key, value in request.form.items():
+                if value == "":
+                    json_request[key] = None
+                else:
+                    json_request[key] = value
+        except Exception as e:
+            response = {"response": str(e)}
+            return make_response(jsonify(response), 400)
+
+        response = update_item(json_request)
+
+        if response["response"] == "Success":
+            return make_response(render_template("manager.html", items=response["data"]), 200)
+        else:
+            return make_response(jsonify(response), 400)
+
+    elif request.method == "POST":
         try:
             json_request = {}
             for key, value in request.form.items():

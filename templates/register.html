@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col">
             <div class="container-fluid row">
-                <form method="patch">
+                <form method="post">
                     <div class='row mx-auto'>
                         <h3>Supplies Section</h3>
                         <input type="submit" class="btn btn-primary" value="Checkout">
@@ -30,7 +30,11 @@
                         {% for item in items %}
                         <label class="card btn m-1" style="width: 12rem;">
                             <div class="card-body">
-                                <input name="{{item.name}}" value="{{item.price}}" type="checkbox" autocomplete="off">
+                                <select name="{{item.name}}">
+                                    {% for number in range(0, item.amount+1) %}
+                                    <option value="{{number}}">{{number}}</option>
+                                    {% endfor %}
+                                </select>
                                 <h5 class="card-title">{{item.name}}</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">{{item.price}}</h6>
                             </div>

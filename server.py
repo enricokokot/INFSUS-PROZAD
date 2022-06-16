@@ -72,6 +72,23 @@ def update_item(json_request):
         return {"response": "Fail", "error": e}
 
 
+def sell_items(json_request):
+    try:
+        with orm.db_session:
+            for item_name, sold_amount in json_request.items():
+                if (sold_amount):
+                    item = Item.get(name=item_name)
+                    item.amount -= int(sold_amount)
+            db_querry = orm.select(x for x in Item)[:]
+            results_list = []
+            for r in db_querry:
+                results_list.append(r.to_dict())
+            response = {"response": "Success", "data": results_list}
+            return response
+    except Exception as e:
+        return {"response": "Fail", "error": e}
+
+
 def delete_item(item_to_delete):
     try:
         with orm.db_session:
@@ -92,10 +109,26 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/register', methods=["GET", "PATCH"])
+@app.route('/register', methods=["GET", "POST"])
 def register():
-    if request.method == "PATCH":
-        return make_response(request.form)
+    if request.method == "POST":
+        try:
+            json_request = {}
+            for key, value in request.form.items():
+                if value == "":
+                    json_request[key] = None
+                else:
+                    json_request[key] = value
+        except Exception as e:
+            response = {"response": str(e)}
+            return make_response(jsonify(response), 400)
+
+        response = sell_items(json_request)
+
+        if response["response"] == "Success":
+            return make_response(render_template("register.html", items=response["data"]), 200)
+        else:
+            return make_response(jsonify(response), 400)
     else:
         response = get_all_items()
         if response["response"] == "Success":

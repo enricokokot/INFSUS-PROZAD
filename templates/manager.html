@@ -39,6 +39,8 @@
       <option value="{{item.name}}">{{item.name}}</option>
       {% endfor %}
     </select>
+    <label>New Name</label>
+    <input name="new name" value="{{request.form["new name"]}}">
     <label>Category</label>
     <input name="category" value="{{request.form["category"]}}">
     <label>Price</label>

@@ -59,11 +59,14 @@ def get_all_items():
 def update_item(json_request):
     try:
         name = json_request["name"]
+        new_name = json_request["new name"]
         category = json_request["category"]
         price = json_request["price"]
         amount = json_request["amount"]
         with orm.db_session:
             item = Item.get(name=name)
+            if (new_name):
+                item.name = new_name
             if (price):
                 item.price = price
             if (category):

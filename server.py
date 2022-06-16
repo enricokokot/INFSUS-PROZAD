@@ -72,6 +72,21 @@ def update_item(json_request):
         return {"response": "Fail", "error": e}
 
 
+def delete_item(item_to_delete):
+    try:
+        with orm.db_session:
+            item = Item.get(name=item_to_delete)
+            item.delete()
+            db_querry = orm.select(x for x in Item)[:]
+            results_list = []
+            for r in db_querry:
+                results_list.append(r.to_dict())
+            response = {"response": "Success", "data": results_list}
+            return response
+    except Exception as e:
+        return {"response": "Fail", "error": e}
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -89,7 +104,7 @@ def register():
             return make_response(jsonify(response), 400)
 
 
-@app.route('/manager', methods=["POST", "GET", "PATCH"])
+@app.route('/manager', methods=["POST", "GET", "PATCH", "DELETE"])
 def manager():
     if request.form.get("_method") == "PATCH":
         try:
@@ -110,6 +125,18 @@ def manager():
         else:
             return make_response(jsonify(response), 400)
 
+    elif request.form.get("_method") == "DELETE":
+        try:
+            item_to_delete = request.form.get("name")
+        except Exception as e:
+            response = {"response": str(e)}
+            return make_response(jsonify(response), 400)
+        response = delete_item(item_to_delete)
+        if response["response"] == "Success":
+            return make_response(render_template("manager.html", items=response["data"]), 200)
+        else:
+            return make_response(jsonify(response), 400)
+
     elif request.method == "POST":
         try:
             json_request = {}
@@ -123,11 +150,11 @@ def manager():
             return make_response(jsonify(response), 400)
 
         response = add_item(json_request)
-
         if response["response"] == "Success":
             return make_response(render_template("manager.html", items=response["data"]), 200)
         else:
             return make_response(jsonify(response), 400)
+
     else:
         response = get_all_items()
         if response["response"] == "Success":

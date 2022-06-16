@@ -122,6 +122,19 @@ def delete_item(item_to_delete):
         return {"response": "Fail", "error": e}
 
 
+def get_all_receipts():
+    try:
+        with orm.db_session:
+            db_querry = orm.select(x for x in Receipt)[:]
+            results_list = []
+            for r in db_querry:
+                results_list.append(r.to_dict())
+            response = {"response": "Success", "data": results_list}
+            return response
+    except Exception as e:
+        return {"response": "Fail", "error": e}
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -172,7 +185,7 @@ def manager():
         response = update_item(json_request)
 
         if response["response"] == "Success":
-            return make_response(render_template("manager.html", items=response["data"]), 200)
+            return make_response(render_template("manager.html", items=response["data"], receipts=get_all_receipts()["data"]), 200)
         else:
             return make_response(jsonify(response), 400)
 
@@ -184,7 +197,7 @@ def manager():
             return make_response(jsonify(response), 400)
         response = delete_item(item_to_delete)
         if response["response"] == "Success":
-            return make_response(render_template("manager.html", items=response["data"]), 200)
+            return make_response(render_template("manager.html", items=response["data"], receipts=get_all_receipts()["data"]), 200)
         else:
             return make_response(jsonify(response), 400)
 
@@ -202,14 +215,14 @@ def manager():
 
         response = add_item(json_request)
         if response["response"] == "Success":
-            return make_response(render_template("manager.html", items=response["data"]), 200)
+            return make_response(render_template("manager.html", items=response["data"], receipts=get_all_receipts()["data"]), 200)
         else:
             return make_response(jsonify(response), 400)
 
     else:
         response = get_all_items()
         if response["response"] == "Success":
-            return make_response(render_template("manager.html", items=response["data"]), 200)
+            return make_response(render_template("manager.html", items=response["data"], receipts=get_all_receipts()["data"]), 200)
         else:
             return make_response(jsonify(response), 400)
 

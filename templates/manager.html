@@ -17,18 +17,21 @@
     </div>
   </nav>
   {% block content %}
+
+  <h4>Add a new item</h4>
   <form method="post">
     <label>Name</label>
-    <input name="name" value="{{request.form["name"]}}" required>
+    <input name="name" value="{{request.form[" name"]}}" required>
     <label>Category</label>
-    <input name="category" value="{{request.form["category"]}}"required>
+    <input name="category" value="{{request.form[" category"]}}"required>
     <label>Price</label>
-    <input name="price" value="{{request.form["price"]}}" required>
+    <input name="price" value="{{request.form[" price"]}}" required>
     <label>Amount</label>
-    <input name="amount" value="{{request.form["amount"]}}" required>
+    <input name="amount" value="{{request.form[" amount"]}}" required>
     <input type="submit" value="Add item">
   </form>
 
+  <h4>Modify an existing item</h4>
   <form method="post">
     <label>Name</label>
     <select name="name">
@@ -46,9 +49,10 @@
     <input type="hidden" name="_method" value="PATCH" />
   </form>
 
+  <h4>Remove an existing item</h4>
   <form method="post">
-  <div class="container row">
-    {% for item in items %}
+    <div class="container row">
+      {% for item in items %}
       <div class="card btn m-1" style="width: 12rem;">
         <div class="card-body">
           <input name="name" type="submit" value="{{item.name}}" class="btn bg-danger">
@@ -62,6 +66,20 @@
       {% endfor %}
     </div>
   </form>
+
+  <h4>A history of receipts</h4>
+  <div class="container row">
+    {% for receipt in receipts %}
+    <div class="card btn m-1" style="width: 12rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{receipt.time}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{receipt.items}}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">{{receipt.amounts}}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">{{receipt.total_price}}</h6>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
   {% endblock %}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"

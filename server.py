@@ -98,6 +98,7 @@ def update_item(json_request):
 def sell_items(json_request):
     try:
         with orm.db_session:
+            items_in_cart = 0
             sold_items = []
             total_cost = 0
             amount_sold = []
@@ -109,6 +110,9 @@ def sell_items(json_request):
                     sold_items.append(item.name)
                     amount_sold.append(int(sold_amount))
                     total_cost += int(sold_amount) * item.price
+                    items_in_cart += 1
+            if (not items_in_cart):
+                raise Exception("No items in cart")
             Receipt(time=str(current_time),
                     items=sold_items,
                     amounts=amount_sold,
@@ -150,7 +154,7 @@ def sell_items(json_request):
             response = {"response": "Success", "data": results_list}
             return response
     except Exception as e:
-        return {"response": "Fail", "error": e}
+        return {"response": "Fail", "error": str(e)}
 
 
 def delete_item(item_to_delete):
@@ -230,6 +234,9 @@ def register():
         response = sell_items(json_request)
 
         if response["response"] == "Success":
+            return make_response(render_template("register.html", items=response["data"]), 200)
+        elif response["error"] == "No items in cart":
+            response = get_all_items()
             return make_response(render_template("register.html", items=response["data"]), 200)
         else:
             return make_response(jsonify(response), 400)

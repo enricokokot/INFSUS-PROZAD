@@ -238,7 +238,7 @@ def register():
             return make_response(render_template("register.html", items=response["data"]), 200)
         elif response["error"] == "No items in cart":
             response = get_all_items()
-            return make_response(render_template("register.html", items=response["data"]), 200)
+            return make_response(render_template("register.html", items=response["data"], sentEmptyOrder=True), 200)
         else:
             return make_response(jsonify(response), 400)
     else:

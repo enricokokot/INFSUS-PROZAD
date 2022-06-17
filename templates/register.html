@@ -23,6 +23,9 @@
                     <div class='row mx-auto'>
                         <h3>Supplies Section</h3>
                         <input type="submit" class="btn btn-primary" value="Checkout">
+                        {% if sentEmptyOrder %}
+                        <h6 class="text-center p-2 text-danger">You can't send an empty order</h6>
+                        {% endif %}
                     </div>
 
                     <div data-toggle="buttons" class="row">

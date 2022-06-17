@@ -75,9 +75,10 @@
     <div class="card btn m-1" style="width: 12rem;">
       <div class="card-body">
         <h5 class="card-title">{{receipt.time}}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">{{receipt.items}}</h6>
-        <h6 class="card-subtitle mb-2 text-muted">{{receipt.amounts}}</h6>
-        <h6 class="card-subtitle mb-2 text-muted">{{receipt.total_price}}</h6>
+        {% for item, amount in zip(receipt["items"], receipt.amounts) %}
+        <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
+        {% endfor %}
+        <h6 class="card-subtitle mb-2 text-muted">TOTAL: {{receipt.total_price}}</h6>
       </div>
     </div>
     {% endfor %}

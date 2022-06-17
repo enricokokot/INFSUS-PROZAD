@@ -271,7 +271,7 @@ def manager():
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic, zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)
 
@@ -296,7 +296,7 @@ def manager():
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic, zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)
 
@@ -327,7 +327,7 @@ def manager():
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic, zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)
 
@@ -346,7 +346,7 @@ def manager():
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic, zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)
 

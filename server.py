@@ -163,6 +163,28 @@ def get_all_daily_traffic():
         return {"response": "Fail", "error": e}
 
 
+def get_manager_data():
+    try:
+        response1 = get_all_items()
+        response2 = get_all_receipts()
+        response3 = get_all_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+            items_data = response1["data"]
+            receipts_data = response2["data"]
+            daily_traffic = response3["data"]
+            days = []
+            traffic = []
+            for day in daily_traffic[-5:]:
+                days.append(day["date"])
+                traffic.append(day["total_traffic"])
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
+        else:
+            return make_response(jsonify(response1), 400)
+    except Exception as e:
+        print("ERROR" + str(e))
+        return {"response": "Fail", "error": e}
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -212,10 +234,21 @@ def manager():
 
         response = update_item(json_request)
 
-        if response["response"] == "Success":
-            return make_response(render_template("manager.html", items=response["data"], receipts=get_all_receipts()["data"]), 200)
+        response1 = get_all_items()
+        response2 = get_all_receipts()
+        response3 = get_all_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+            items_data = response1["data"]
+            receipts_data = response2["data"]
+            daily_traffic = response3["data"]
+            days = []
+            traffic = []
+            for day in daily_traffic[-5:]:
+                days.append(day["date"])
+                traffic.append(day["total_traffic"])
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
         else:
-            return make_response(jsonify(response), 400)
+            return make_response(jsonify(response1), 400)
 
     elif request.form.get("_method") == "DELETE":
         try:
@@ -224,10 +257,21 @@ def manager():
             response = {"response": str(e)}
             return make_response(jsonify(response), 400)
         response = delete_item(item_to_delete)
-        if response["response"] == "Success":
-            return make_response(render_template("manager.html", items=response["data"], receipts=get_all_receipts()["data"]), 200)
+        response1 = get_all_items()
+        response2 = get_all_receipts()
+        response3 = get_all_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+            items_data = response1["data"]
+            receipts_data = response2["data"]
+            daily_traffic = response3["data"]
+            days = []
+            traffic = []
+            for day in daily_traffic[-5:]:
+                days.append(day["date"])
+                traffic.append(day["total_traffic"])
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
         else:
-            return make_response(jsonify(response), 400)
+            return make_response(jsonify(response1), 400)
 
     elif request.method == "POST":
         try:
@@ -242,17 +286,11 @@ def manager():
             return make_response(jsonify(response), 400)
 
         response = add_item(json_request)
-        if response["response"] == "Success":
-            return make_response(render_template("manager.html", items=response["data"], receipts=get_all_receipts()["data"]), 200)
-        else:
-            return make_response(jsonify(response), 400)
-
-    else:
-        response = get_all_items()
+        response1 = get_all_items()
         response2 = get_all_receipts()
         response3 = get_all_daily_traffic()
-        if response["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
-            items_data = response["data"]
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+            items_data = response1["data"]
             receipts_data = response2["data"]
             daily_traffic = response3["data"]
             days = []
@@ -262,7 +300,24 @@ def manager():
                 traffic.append(day["total_traffic"])
             return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
         else:
-            return make_response(jsonify(response), 400)
+            return make_response(jsonify(response1), 400)
+
+    else:
+        response1 = get_all_items()
+        response2 = get_all_receipts()
+        response3 = get_all_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+            items_data = response1["data"]
+            receipts_data = response2["data"]
+            daily_traffic = response3["data"]
+            days = []
+            traffic = []
+            for day in daily_traffic[-5:]:
+                days.append(day["date"])
+                traffic.append(day["total_traffic"])
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
+        else:
+            return make_response(jsonify(response1), 400)
 
 
 if __name__ == "__main__":

@@ -85,6 +85,7 @@
 
   <div class="container">
     <canvas id="dailyTrafficGraph" width="200" height="50"></canvas>
+    <canvas id="dailyTrafficGraphToo" width="200" height="50"></canvas>
   </div>
 
   {% endblock %}
@@ -94,6 +95,23 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     var ctx = document.getElementById("dailyTrafficGraph")
+    var data = {
+      labels: {{ days|safe }},
+      datasets: [{
+        label: "Daily traffic in the last 5 days",
+        backgroundColor: "#082696",
+        borderColor: "#082696",
+        data: {{ traffic|safe }}
+      }]
+    }
+    var config = {
+      type: "bar",
+      data: data
+    }
+    var chart = new Chart(ctx, config)
+  </script>
+  <script>
+    var ctx = document.getElementById("dailyTrafficGraphToo")
     var data = {
       labels: {{ days|safe }},
       datasets: [{

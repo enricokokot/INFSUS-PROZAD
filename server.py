@@ -26,6 +26,13 @@ class DailyTraffic(DB.Entity):
     total_traffic = orm.Required(float)
 
 
+class DetailedDailyTraffic(DB.Entity):
+    date = orm.Required(str)
+    items = orm.Required(orm.StrArray)
+    amounts = orm.Required(orm.IntArray)
+    prices = orm.Required(orm.FloatArray)
+
+
 DB.bind(provider="sqlite", filename="database.sqlite", create_db=True)
 DB.generate_mapping(create_tables=True)
 
@@ -106,6 +113,30 @@ def sell_items(json_request):
                     items=sold_items,
                     amounts=amount_sold,
                     total_price=total_cost)
+            item_prices = []
+            for sold_item in sold_items:
+                item_prices.append(Item.get(name=sold_item).price)
+            existing_day = DetailedDailyTraffic.get(
+                date=str(current_time.date()))
+            if (not existing_day):
+                DetailedDailyTraffic(date=str(current_time.date()),
+                                     items=sold_items,
+                                     amounts=amount_sold,
+                                     prices=item_prices)
+            else:
+                items_already_sold = existing_day.items
+                for sold_item in sold_items:
+                    if sold_item in items_already_sold:
+                        index_of_existing_item = items_already_sold.index(
+                            sold_item)
+                        existing_day.amounts[index_of_existing_item] += amount_sold[sold_items.index(
+                            sold_item)]
+                    else:
+                        items_already_sold.append(sold_item)
+                        existing_day.amounts.append(
+                            amount_sold[sold_items.index(sold_item)])
+                        existing_day.prices.append(
+                            item_prices[sold_items.index(sold_item)])
             existing_traffic = DailyTraffic.get(date=str(current_time.date()))
             if (existing_traffic):
                 existing_traffic.total_traffic += total_cost

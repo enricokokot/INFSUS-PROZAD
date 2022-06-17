@@ -83,9 +83,10 @@
     {% endfor %}
   </div>
 
+  <h4>Statistics</h4>
   <div class="container">
     <canvas id="dailyTrafficGraph" width="200" height="50"></canvas>
-    <canvas id="dailyTrafficGraphToo" width="200" height="50"></canvas>
+    <canvas id="detailedDailyTrafficGraph" width="50" height="50"></canvas>
   </div>
 
   {% endblock %}
@@ -99,8 +100,8 @@
       labels: {{ days|safe }},
       datasets: [{
         label: "Daily traffic in the last 5 days",
-        backgroundColor: "#082696",
-        borderColor: "#082696",
+        backgroundColor: "#004c6d",
+        borderColor: "#004c6d",
         data: {{ traffic|safe }}
       }]
     }
@@ -111,18 +112,24 @@
     var chart = new Chart(ctx, config)
   </script>
   <script>
-    var ctx = document.getElementById("dailyTrafficGraphToo")
+    var ctx = document.getElementById("detailedDailyTrafficGraph")
     var data = {
-      labels: {{ days|safe }},
+      labels: {{ detailed_daily_traffic["items"]|safe }},
       datasets: [{
-        label: "Daily traffic in the last 5 days",
-        backgroundColor: "#082696",
-        borderColor: "#082696",
-        data: {{ traffic|safe }}
+        label: "Amount of items sold today",
+        backgroundColor: ["#003f5c",
+                          "#2f4b7c",
+                          "#665191",
+                          "#a05195",
+                          "#d45087",
+                          "#f95d6a",
+                          "#ff7c43",
+                          "#ffa600",],
+        data: {{ detailed_daily_traffic["amounts"]|safe }}
       }]
     }
     var config = {
-      type: "bar",
+      type: "pie",
       data: data
     }
     var chart = new Chart(ctx, config)

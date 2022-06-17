@@ -194,25 +194,17 @@ def get_all_daily_traffic():
         return {"response": "Fail", "error": e}
 
 
-def get_manager_data():
+def get_detailed_daily_traffic():
     try:
-        response1 = get_all_items()
-        response2 = get_all_receipts()
-        response3 = get_all_daily_traffic()
-        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
-            items_data = response1["data"]
-            receipts_data = response2["data"]
-            daily_traffic = response3["data"]
-            days = []
-            traffic = []
-            for day in daily_traffic[-5:]:
-                days.append(day["date"])
-                traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
-        else:
-            return make_response(jsonify(response1), 400)
+        with orm.db_session:
+            db_querry = orm.select(
+                x for x in DetailedDailyTraffic if x.date == str(datetime.now().date()))[:]
+            results_list = []
+            for r in db_querry:
+                results_list.append(r.to_dict())
+            response = {"response": "Success", "data": results_list[0]}
+            return response
     except Exception as e:
-        print("ERROR" + str(e))
         return {"response": "Fail", "error": e}
 
 
@@ -268,16 +260,18 @@ def manager():
         response1 = get_all_items()
         response2 = get_all_receipts()
         response3 = get_all_daily_traffic()
-        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+        response4 = get_detailed_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success" and response4["response"] == "Success":
             items_data = response1["data"]
             receipts_data = response2["data"]
             daily_traffic = response3["data"]
+            detailed_daily_traffic = response4["data"]
             days = []
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
         else:
             return make_response(jsonify(response1), 400)
 
@@ -291,16 +285,18 @@ def manager():
         response1 = get_all_items()
         response2 = get_all_receipts()
         response3 = get_all_daily_traffic()
-        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+        response4 = get_detailed_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success" and response4["response"] == "Success":
             items_data = response1["data"]
             receipts_data = response2["data"]
             daily_traffic = response3["data"]
+            detailed_daily_traffic = response4["data"]
             days = []
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
         else:
             return make_response(jsonify(response1), 400)
 
@@ -320,16 +316,18 @@ def manager():
         response1 = get_all_items()
         response2 = get_all_receipts()
         response3 = get_all_daily_traffic()
-        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+        response4 = get_detailed_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success" and response4["response"] == "Success":
             items_data = response1["data"]
             receipts_data = response2["data"]
             daily_traffic = response3["data"]
+            detailed_daily_traffic = response4["data"]
             days = []
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
         else:
             return make_response(jsonify(response1), 400)
 
@@ -337,16 +335,18 @@ def manager():
         response1 = get_all_items()
         response2 = get_all_receipts()
         response3 = get_all_daily_traffic()
-        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success":
+        response4 = get_detailed_daily_traffic()
+        if response1["response"] == "Success" and response2["response"] == "Success" and response3["response"] == "Success" and response4["response"] == "Success":
             items_data = response1["data"]
             receipts_data = response2["data"]
             daily_traffic = response3["data"]
+            detailed_daily_traffic = response4["data"]
             days = []
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
                 traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic), 200)
+            return make_response(render_template("manager.html", items=items_data, receipts=receipts_data, days=days, traffic=traffic, detailed_daily_traffic=detailed_daily_traffic), 200)
         else:
             return make_response(jsonify(response1), 400)
 

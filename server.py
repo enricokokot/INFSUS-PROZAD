@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response, render_template, request
 from pony import orm
 from datetime import datetime
+from decimal import Decimal
 
 DB = orm.Database()
 
@@ -10,7 +11,7 @@ app = Flask(__name__)
 class Item(DB.Entity):
     name = orm.Required(str, unique=True)
     category = orm.Required(str)
-    price = orm.Required(float)
+    price = orm.Required(Decimal)
     amount = orm.Required(int)
 
 
@@ -18,12 +19,12 @@ class Receipt(DB.Entity):
     time = orm.Required(str, unique=True)
     items = orm.Required(orm.StrArray)
     amounts = orm.Required(orm.IntArray)
-    total_price = orm.Required(float)
+    total_price = orm.Required(Decimal)
 
 
 class DailyTraffic(DB.Entity):
     date = orm.Required(str)
-    total_traffic = orm.Required(float)
+    total_traffic = orm.Required(Decimal)
 
 
 class DetailedDailyTraffic(DB.Entity):
@@ -280,13 +281,13 @@ def manager():
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
-                traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", 
-                                                 items=items_data, 
-                                                 receipts=receipts_data, 
-                                                 days=days, 
-                                                 traffic=traffic, 
-                                                 detailed_daily_traffic=detailed_daily_traffic, 
+                traffic.append(float(day["total_traffic"]))
+            return make_response(render_template("manager.html",
+                                                 items=items_data,
+                                                 receipts=receipts_data,
+                                                 days=days,
+                                                 traffic=traffic,
+                                                 detailed_daily_traffic=detailed_daily_traffic,
                                                  zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)
@@ -314,13 +315,13 @@ def manager():
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
-                traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", 
-                                                 items=items_data, 
-                                                 receipts=receipts_data, 
-                                                 days=days, 
-                                                 traffic=traffic, 
-                                                 detailed_daily_traffic=detailed_daily_traffic, 
+                traffic.append(float(day["total_traffic"]))
+            return make_response(render_template("manager.html",
+                                                 items=items_data,
+                                                 receipts=receipts_data,
+                                                 days=days,
+                                                 traffic=traffic,
+                                                 detailed_daily_traffic=detailed_daily_traffic,
                                                  zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)
@@ -354,13 +355,13 @@ def manager():
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
-                traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", 
-                                                 items=items_data, 
-                                                 receipts=receipts_data, 
-                                                 days=days, 
-                                                 traffic=traffic, 
-                                                 detailed_daily_traffic=detailed_daily_traffic, 
+                traffic.append(float(day["total_traffic"]))
+            return make_response(render_template("manager.html",
+                                                 items=items_data,
+                                                 receipts=receipts_data,
+                                                 days=days,
+                                                 traffic=traffic,
+                                                 detailed_daily_traffic=detailed_daily_traffic,
                                                  zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)
@@ -382,13 +383,13 @@ def manager():
             traffic = []
             for day in daily_traffic[-5:]:
                 days.append(day["date"])
-                traffic.append(day["total_traffic"])
-            return make_response(render_template("manager.html", 
-                                                 items=items_data, 
-                                                 receipts=receipts_data, 
-                                                 days=days, 
-                                                 traffic=traffic, 
-                                                 detailed_daily_traffic=detailed_daily_traffic, 
+                traffic.append(float(day["total_traffic"]))
+            return make_response(render_template("manager.html",
+                                                 items=items_data,
+                                                 receipts=receipts_data,
+                                                 days=days,
+                                                 traffic=traffic,
+                                                 detailed_daily_traffic=detailed_daily_traffic,
                                                  zip=zip), 200)
         else:
             return make_response(jsonify(response1), 400)

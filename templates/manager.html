@@ -82,10 +82,35 @@
     </div>
     {% endfor %}
   </div>
+
+  <div class="container">
+    <canvas id="dailyTrafficGraph" width="200" height="50"></canvas>
+  </div>
+
   {% endblock %}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
     crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    var ctx = document.getElementById("dailyTrafficGraph")
+    var data = {
+      labels: {{ days|safe }},
+      datasets: [{
+        label: "Daily traffic in the last 5 days",
+        backgroundColor: "#082696",
+        borderColor: "#082696",
+        data: {{ traffic|safe }}
+      }]
+    }
+    var config = {
+      type: "bar",
+      data: data
+    }
+    var chart = new Chart(ctx, config)
+  </script>
+
+
 </body>
 
 </html>

@@ -18,76 +18,114 @@
   </nav>
   {% block content %}
 
-  <h4>Add a new item</h4>
-  <form method="post">
-    <label>Name</label>
-    <input name="name" value="{{request.form[" name"]}}" required>
-    <label>Category</label>
-    <input name="category" value="{{request.form[" category"]}}"required>
-    <label>Price</label>
-    <input name="price" value="{{request.form[" price"]}}" required>
-    <label>Amount</label>
-    <input name="amount" value="{{request.form[" amount"]}}" required>
-    <input type="submit" value="Add item">
+  <div class="container-fluid row">
+
+    <div class="container-fluid col">
+      <h4 class="p-2">Add a new item</h4>
+      <form method="post">
+        <div class="form-group">
+          <label for="itemName">Item Name</label>
+          <input class="form-control" id="itemName" placeholder="socks" name="name" value="{{request.form[" name"]}}"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="itemCategory">Item Category</label>
+          <input class="form-control" id="itemCategory" placeholder="underwear" name="category" value="{{request.form["
+            category"]}}" required>
+        </div>
+        <div class="form-group">
+          <label for="itemPrice">Item Price</label>
+          <input class="form-control" id="itemPrice" placeholder="24.49" name="price" value="{{request.form[" price"]}}"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="itemAmount">Item Amount</label>
+          <input class="form-control" id="itemAmount" placeholder="12" name="amount" value="{{request.form[" amount"]}}"
+            required>
+        </div>
+        <button type="submit" class="btn btn-primary my-2">Add item</button>
+      </form>
+    </div>
+
+    <div class="container-fluid col">
+      <h4 class="p-2">Modify an existing item</h4>
+      <form method="post">
+        <div class="form-group">
+          <label for="name">Item to Modify</label>
+          <select name="name" class="form-control">
+            {% for item in items %}
+            <option value="{{item.name}}">{{item.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="newItemName">New Item Name</label>
+          <input class="form-control" id="newItemName" name="new name" value="{{request.form[" name"]}}">
+        </div>
+        <div class="form-group">
+          <label for="itemCategory">New Item Category</label>
+          <input class="form-control" id="newItemCategory" name="category" value="{{request.form[" category"]}}">
+        </div>
+        <div class="form-group">
+          <label for="itemPrice">New Item Price</label>
+          <input class="form-control" id="newItemPrice" name="price" value="{{request.form[" price"]}}">
+        </div>
+        <div class="form-group">
+          <label for="newItemAmount">New Item Amount</label>
+          <input class="form-control" id="newItemAmount" name="amount" value="{{request.form[" amount"]}}">
+        </div>
+        <button type="submit" class="btn btn-primary my-2">Modify item</button>
+        <input type="hidden" name="_method" value="PATCH" />
+      </form>
+    </div>
+
+  </div>
+
+  <div class="container-fluid">
+    <h4 class="p-2">Remove an existing item</h4>
+    <form method="post">
+      <div class="row row-cols-4 my-1 gy-2 p-2">
+        {% for item in items %}
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title py-2 text-center">{{item.name.title()}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Price: {{item.price}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Category: {{item.category}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">In stock: {{item.amount}}</h6>
+            <div class="text-center">
+              <button name='name' type="submit" value="{{item.name}}" class="btn btn-danger my-2">Delete item</button>
+              <input type="hidden" name="_method" value="DELETE" />
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+  </div>
   </form>
 
-  <h4>Modify an existing item</h4>
-  <form method="post">
-    <label>Name</label>
-    <select name="name">
-      {% for item in items %}
-      <option value="{{item.name}}">{{item.name}}</option>
-      {% endfor %}
-    </select>
-    <label>New Name</label>
-    <input name="new name" value="{{request.form["new name"]}}">
-    <label>Category</label>
-    <input name="category" value="{{request.form["category"]}}">
-    <label>Price</label>
-    <input name="price" value="{{request.form["price"]}}">
-    <label>Amount</label>
-    <input name="amount" value="{{request.form["amount"]}}">
-    <input type="submit" value="Modify item">
-    <input type="hidden" name="_method" value="PATCH" />
-  </form>
-
-  <h4>Remove an existing item</h4>
-  <form method="post">
-    <div class="container row">
-      {% for item in items %}
-      <div class="card btn m-1" style="width: 12rem;">
-        <div class="card-body">
-          <input name="name" type="submit" value="{{item.name}}" class="btn bg-danger">
-          <h5 class="card-title">{{item.name}}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{item.price}}</h6>
-          <h6 class="card-subtitle mb-2 text-muted">{{item.category}}</h6>
-          <h6 class="card-subtitle mb-2 text-muted">{{item.amount}}</h6>
-          <input type="hidden" name="_method" value="DELETE" />
+  <div class="container-fluid">
+    <h4 class="p-2">A history of receipts</h4>
+    <div class="row row-cols-4 space-between my-1 gy-2 p-2">
+      {% for receipt in receipts %}
+      <div class="card col">
+        <div class="card-body mb-5">
+          <h6 class="card-title text-center pb-2">{{receipt.time}}</h6>
+          {% for item, amount in zip(receipt["items"], receipt.amounts) %}
+          <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
+          {% endfor %}
+          <h6 class="card-subtitle position-absolute bottom-0 p-2">TOTAL: {{receipt.total_price}}</h6>
         </div>
       </div>
       {% endfor %}
     </div>
-  </form>
-
-  <h4>A history of receipts</h4>
-  <div class="container row">
-    {% for receipt in receipts %}
-    <div class="card btn m-1" style="width: 12rem;">
-      <div class="card-body">
-        <h5 class="card-title">{{receipt.time}}</h5>
-        {% for item, amount in zip(receipt["items"], receipt.amounts) %}
-        <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
-        {% endfor %}
-        <h6 class="card-subtitle mb-2 text-muted">TOTAL: {{receipt.total_price}}</h6>
-      </div>
-    </div>
-    {% endfor %}
   </div>
 
-  <h4>Statistics</h4>
-  <div class="container">
-    <canvas id="dailyTrafficGraph" width="200" height="50"></canvas>
-    <canvas id="detailedDailyTrafficGraph" width="50" height="50"></canvas>
+  <div class="container-fluid">
+    <div class="container-fluid">
+      <h4 class="p-2">Statistics</h4>
+      <canvas id="dailyTrafficGraph"></canvas>
+      <canvas id="detailedDailyTrafficGraph"></canvas>
+    </div>
   </div>
 
   {% endblock %}
@@ -98,39 +136,31 @@
   <script>
     var ctx = document.getElementById("dailyTrafficGraph")
     var data = {
-      labels: {{ days|safe }},
+      labels: {{ days| safe }},
       datasets: [{
-        label: "Daily traffic in the last 5 days",
-        backgroundColor: "#004c6d",
-        borderColor: "#004c6d",
-        data: {{ traffic|safe }}
-      }]
+        label: "Daily traffic on date",
+        backgroundColor: "#2f4b7c",
+        data: {{ traffic| safe }}
+        }]
     }
     var config = {
       type: "line",
-      data: data
+      data: data,
     }
     var chart = new Chart(ctx, config)
   </script>
   <script>
     var ctx = document.getElementById("detailedDailyTrafficGraph")
     var data = {
-      labels: {{ detailed_daily_traffic["items"]|safe }},
+      labels: {{ detailed_daily_traffic["items"]| safe }},
       datasets: [{
         label: "Amount of items sold today",
-        backgroundColor: ["#003f5c",
-                          "#2f4b7c",
-                          "#665191",
-                          "#a05195",
-                          "#d45087",
-                          "#f95d6a",
-                          "#ff7c43",
-                          "#ffa600",],
-        data: {{ detailed_daily_traffic["amounts"]|safe }}
-      }]
+        backgroundColor: "#f95d6a",
+        data: {{ detailed_daily_traffic["amounts"]| safe }}
+        }]
     }
     var config = {
-      type: "pie",
+      type: "bar",
       data: data,
     }
     var chart = new Chart(ctx, config)

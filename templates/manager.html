@@ -74,7 +74,11 @@
           <label for="newItemAmount">New Item Amount</label>
           <input class="form-control" id="newItemAmount" name="amount" value="{{request.form[" amount"]}}">
         </div>
+        {% if items %}
         <button type="submit" class="btn btn-primary my-2">Modify item</button>
+        {% else %}
+        <button type="submit" class="btn btn-primary my-2" disabled>Modify item</button>
+        {% endif %}
         <input type="hidden" name="_method" value="PATCH" />
       </form>
     </div>
@@ -83,6 +87,7 @@
 
   <div class="container-fluid">
     <h4 class="p-2">Remove an existing item</h4>
+    {% if items %}
     <form method="post">
       <div class="row row-cols-4 my-1 gy-2 p-2">
         {% for item in items %}
@@ -100,11 +105,17 @@
         </div>
         {% endfor %}
       </div>
+    </form>
+    {% else %}
+    <div class="text-center p-3">
+      There are currently no items
+    </div>
+    {% endif %}
   </div>
-  </form>
 
   <div class="container-fluid">
     <h4 class="p-2">A history of receipts</h4>
+    {% if receipts %}
     <div class="row row-cols-4 space-between my-1 gy-2 p-2">
       {% for receipt in receipts %}
       <div class="card col">
@@ -118,14 +129,25 @@
       </div>
       {% endfor %}
     </div>
+    {% else %}
+    <div class="text-center p-3">
+      There are currently no receipts
+    </div>
+    {% endif %}
   </div>
 
   <div class="container-fluid">
-    <div class="container-fluid">
       <h4 class="p-2">Statistics</h4>
+      {% if days and traffic %}
+      {% if detailed_daily_traffic != {} %}
       <canvas id="dailyTrafficGraph"></canvas>
+      {% endif %}
       <canvas id="detailedDailyTrafficGraph"></canvas>
-    </div>
+      {% else %}
+      <div class="text-center">
+        There are currently no stats
+      </div>
+    {% endif %}
   </div>
 
   {% endblock %}

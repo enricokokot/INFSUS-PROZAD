@@ -207,10 +207,13 @@ def get_detailed_daily_traffic():
             results_list = []
             for r in db_querry:
                 results_list.append(r.to_dict())
-            response = {"response": "Success", "data": results_list[0]}
+            if results_list:
+                response = {"response": "Success", "data": results_list[0]}
+            else:
+                response = {"response": "Success", "data": {}}
             return response
     except Exception as e:
-        return {"response": "Fail", "error": e}
+        return {"response": "Fail", "error": str(e)}
 
 
 @app.route('/')
@@ -236,19 +239,28 @@ def register():
         response2 = get_all_receipts()
 
         if response["response"] == "Success" and response2["response"] == "Success":
-            return make_response(render_template("register.html", items=response["data"], receipts=response2["data"][-5:], zip=zip), 200)
+            return make_response(render_template("register.html",
+                                                 items=response["data"],
+                                                 receipts=response2["data"][-5:],
+                                                 zip=zip), 200)
         elif response["error"] == "No items in cart" and response2["response"] == "Success":
             response = get_all_items()
-            return make_response(render_template("register.html", items=response["data"], receipts=response2["data"][-5:], zip=zip, sentEmptyOrder=True), 200)
+            return make_response(render_template("register.html",
+                                                 items=response["data"],
+                                                 receipts=response2["data"][-5:],
+                                                 zip=zip,
+                                                 sentEmptyOrder=True), 200)
         else:
-            return make_response(jsonify(response), 400)
+            return make_response(render_template("register.html",
+                                                 zip=zip,
+                                                 sentEmptyOrder=True), 200)
     else:
         response = get_all_items()
         response2 = get_all_receipts()
         if response["response"] == "Success" and response2["response"] == "Success":
             return make_response(render_template("register.html", items=response["data"], receipts=response2["data"][-5:], zip=zip), 200)
         else:
-            return make_response(jsonify(response), 400)
+            return make_response(render_template("register.html", zip=zip), 200)
 
 
 @app.route('/manager', methods=["POST", "GET", "PATCH", "DELETE"])
@@ -366,7 +378,9 @@ def manager():
                                                  detailed_daily_traffic=detailed_daily_traffic,
                                                  zip=zip), 200)
         else:
-            return make_response(jsonify(response1), 400)
+            return make_response(render_template("manager.html",
+                                                 detailed_daily_traffic={},
+                                                 zip=zip), 200)
 
     else:
         response1 = get_all_items()
@@ -394,7 +408,10 @@ def manager():
                                                  detailed_daily_traffic=detailed_daily_traffic,
                                                  zip=zip), 200)
         else:
-            return make_response(jsonify(response1), 400)
+            DB.create_tables()
+            return make_response(render_template("manager.html",
+                                                 detailed_daily_traffic={},
+                                                 zip=zip), 200)
 
 
 if __name__ == "__main__":

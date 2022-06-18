@@ -50,7 +50,8 @@
                 </form>
                 <div class='row mx-auto m-2'>
                     <h3>Last 5 receipts</h3>
-                    <div class="container-fluid row row-cols-5 space-between">
+                    {% if receipts %}
+                    <div class="container-fluid row row-cols-5 space-between justify-content-center">
                       {% for receipt in receipts %}
                       <div class="card col">
                         <div class="card-body mb-5">
@@ -63,6 +64,11 @@
                       </div>
                       {% endfor %}
                     </div>
+                    {% else %}
+                    <div class="text-center">
+                        There are currently no receipts
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

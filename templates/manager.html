@@ -100,7 +100,13 @@
               <h5 class="card-title py-2 text-center">{{item.name.title()}}</h5>
               <h6 class="card-subtitle mb-2 text-muted">Price: {{item.price}}</h6>
               <h6 class="card-subtitle mb-2 text-muted">Category: {{item.category}}</h6>
+              {% if item.amount >= 10 %}
               <h6 class="card-subtitle mb-2 text-muted">In stock: {{item.amount}}</h6>
+              {% elif item.amount > 0 %}
+              <h6 class="card-subtitle mb-2 text-warning">In stock: {{item.amount}}</h6>
+              {% else %}
+              <h6 class="card-subtitle mb-2 text-danger">In stock: {{item.amount}}</h6>
+              {% endif %}
               <div class="text-center">
                 <button name='name' type="submit" value="{{item.name}}" class="btn btn-danger my-2">Delete item</button>
                 <input type="hidden" name="_method" value="DELETE" />

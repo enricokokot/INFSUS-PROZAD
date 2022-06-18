@@ -92,17 +92,19 @@
     <h4 class="p-2">Remove an existing item</h4>
     {% if items %}
     <form method="post">
-      <div class="row row-cols-4 my-1 gy-2 p-2">
+      <div class="row row-cols-4 g-2">
         {% for item in items %}
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title py-2 text-center">{{item.name.title()}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Price: {{item.price}}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Category: {{item.category}}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">In stock: {{item.amount}}</h6>
-            <div class="text-center">
-              <button name='name' type="submit" value="{{item.name}}" class="btn btn-danger my-2">Delete item</button>
-              <input type="hidden" name="_method" value="DELETE" />
+        <div class="accordion">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title py-2 text-center">{{item.name.title()}}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Price: {{item.price}}</h6>
+              <h6 class="card-subtitle mb-2 text-muted">Category: {{item.category}}</h6>
+              <h6 class="card-subtitle mb-2 text-muted">In stock: {{item.amount}}</h6>
+              <div class="text-center">
+                <button name='name' type="submit" value="{{item.name}}" class="btn btn-danger my-2">Delete item</button>
+                <input type="hidden" name="_method" value="DELETE" />
+              </div>
             </div>
           </div>
         </div>
@@ -119,18 +121,32 @@
   <div class="container-fluid">
     <h4 class="p-2">A history of receipts</h4>
     {% if receipts %}
-    <div class="row row-cols-4 space-between my-1 gy-2 p-2">
-      {% for receipt in receipts %}
-      <div class="card col">
-        <div class="card-body mb-5">
-          <h6 class="card-title text-center pb-2">{{receipt.time}}</h6>
-          {% for item, amount in zip(receipt["items"], receipt.amounts) %}
-          <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
-          {% endfor %}
-          <h6 class="card-subtitle position-absolute bottom-0 p-2">TOTAL: {{receipt.total_price}}</h6>
+    <div id="accordionExample" class="accordion">
+      <div class="row row-cols-4 gx-2">
+        {% for receipt in receipts %}
+        <div class="col">
+          <div class="card-body mb-2">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{"a" +
+                  receipt.time.replace(" ", "-").replace(":", "-" ).replace(".", "-" )}}">
+                  {{receipt.time}}
+                </button>
+              </h2>
+              <div id="{{"a" + receipt.time.replace(" ", "-").replace(":", "-" ).replace(".", "-" )}}"
+                class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  {% for item, amount in zip(receipt["items"], receipt.amounts) %}
+                  <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
+                  {% endfor %}
+                  <h6 class="card-subtitle p-2 text-center">TOTAL: {{receipt.total_price}}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
     {% else %}
     <div class="text-center p-3">

@@ -29,18 +29,20 @@
                     </div>
 
                     <div data-toggle="buttons" class="container-fluid">
-                        <div class="row row-cols-3 my-1 gy-2">
+                        <div class="row row-cols-3 my-1 g-1">
                             {% block content %}
                             {% for item in items %}
-                            <label class="card btn col">
-                                <div class="card-body">
-                                    <select name="{{item.name}}">
-                                        {% for number in range(0, item.amount+1) %}
-                                        <option value="{{number}}">{{number}}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <h5 class="card-title">{{item.name}}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">{{item.price}}</h6>
+                            <label class="accordion">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <select name="{{item.name}}">
+                                            {% for number in range(0, item.amount+1) %}
+                                            <option value="{{number}}">{{number}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <h5 class="card-title">{{item.name}}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{item.price}}</h6>
+                                    </div>
                                 </div>
                             </label>
                             {% endfor %}
@@ -51,16 +53,18 @@
                 <div class='row mx-auto m-2'>
                     <h3>Last 5 receipts</h3>
                     {% if receipts %}
-                    <div class="container-fluid row row-cols-5 space-between justify-content-center">
+                    <div class="container-fluid row row-cols-5 justify-content-center g-1">
                       {% for receipt in receipts %}
-                      <div class="card col">
-                        <div class="card-body mb-5">
-                          <h6 class="card-title text-center pb-2">{{receipt.time}}</h6>
-                          {% for item, amount in zip(receipt["items"], receipt.amounts) %}
-                          <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
-                          {% endfor %}
-                          <h6 class="card-subtitle position-absolute bottom-0 p-2">TOTAL: {{receipt.total_price}}</h6>
-                        </div>
+                      <div class="accordion">
+                          <div class="card">
+                            <div class="card-body mb-4">
+                              <h6 class="card-title text-center pb-2">{{receipt.time}}</h6>
+                              {% for item, amount in zip(receipt["items"], receipt.amounts) %}
+                              <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
+                              {% endfor %}
+                              <h6 class="card-subtitle position-absolute bottom-0 p-2">TOTAL: {{receipt.total_price}}</h6>
+                            </div>
+                          </div>
                       </div>
                       {% endfor %}
                     </div>

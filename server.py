@@ -208,7 +208,14 @@ def get_detailed_daily_traffic():
             for r in db_querry:
                 results_list.append(r.to_dict())
             if results_list:
-                response = {"response": "Success", "data": results_list[0]}
+                todays_traffic = results_list[0]
+                items = todays_traffic["items"]
+                amounts = todays_traffic["amounts"]
+                amounts, items = (list(t)
+                                  for t in zip(*sorted(zip(amounts, items))))
+                todays_traffic["items"] = items
+                todays_traffic["amounts"] = amounts
+                response = {"response": "Success", "data": todays_traffic}
             else:
                 response = {"response": "Success", "data": {}}
             return response

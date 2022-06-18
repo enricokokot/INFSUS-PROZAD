@@ -48,6 +48,22 @@
                         </div>
                     </div>
                 </form>
+                <div class='row mx-auto m-2'>
+                    <h3>Last 5 receipts</h3>
+                    <div class="container-fluid row row-cols-5">
+                      {% for receipt in receipts %}
+                      <div class="card btn col">
+                        <div class="card-body">
+                          <h5 class="card-title">{{receipt.time}}</h5>
+                          {% for item, amount in zip(receipt["items"], receipt.amounts) %}
+                          <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
+                          {% endfor %}
+                          <h6 class="card-subtitle mb-2 text-muted">TOTAL: {{receipt.total_price}}</h6>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

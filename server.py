@@ -233,18 +233,20 @@ def register():
             return make_response(jsonify(response), 400)
 
         response = sell_items(json_request)
+        response2 = get_all_receipts()
 
-        if response["response"] == "Success":
-            return make_response(render_template("register.html", items=response["data"]), 200)
-        elif response["error"] == "No items in cart":
+        if response["response"] == "Success" and response2["response"] == "Success":
+            return make_response(render_template("register.html", items=response["data"], receipts=response2["data"][-5:], zip=zip), 200)
+        elif response["error"] == "No items in cart" and response2["response"] == "Success":
             response = get_all_items()
-            return make_response(render_template("register.html", items=response["data"], sentEmptyOrder=True), 200)
+            return make_response(render_template("register.html", items=response["data"], receipts=response2["data"][-5:], zip=zip, sentEmptyOrder=True), 200)
         else:
             return make_response(jsonify(response), 400)
     else:
         response = get_all_items()
-        if response["response"] == "Success":
-            return make_response(render_template("register.html", items=response["data"]), 200)
+        response2 = get_all_receipts()
+        if response["response"] == "Success" and response2["response"] == "Success":
+            return make_response(render_template("register.html", items=response["data"], receipts=response2["data"][-5:], zip=zip), 200)
         else:
             return make_response(jsonify(response), 400)
 

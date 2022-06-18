@@ -120,7 +120,7 @@ def sell_items(json_request):
                     total_price=total_cost)
             item_prices = []
             for sold_item in sold_items:
-                item_prices.append(Item.get(name=sold_item).price)
+                item_prices.append(float(Item.get(name=sold_item).price))
             existing_day = DetailedDailyTraffic.get(
                 date=str(current_time.date()))
             if (not existing_day):

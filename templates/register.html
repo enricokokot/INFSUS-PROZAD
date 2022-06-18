@@ -35,13 +35,19 @@
                             <label class="accordion">
                                 <div class="card">
                                     <div class="card-body text-center">
-                                        <select name="{{item.name}}">
-                                            {% for number in range(0, item.amount+1) %}
+                                        <h5 class="card-title">{{item.name}}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{item.price}}</h6>
+                                        {% if item.amount == 0 %}
+                                        <select name="{{item.name}}" class="form-control" disabled>
+                                            <option selected>No item in stock</option>
+                                        {% else %}
+                                        <select name="{{item.name}}" class="form-control">
+                                            <option selected>Choose amount</option>
+                                        {% endif %}
+                                            {% for number in range(1, item.amount+1) %}
                                             <option value="{{number}}">{{number}}</option>
                                             {% endfor %}
                                         </select>
-                                        <h5 class="card-title">{{item.name}}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">{{item.price}}</h6>
                                     </div>
                                 </div>
                             </label>
@@ -57,12 +63,12 @@
                       {% for receipt in receipts %}
                       <div class="accordion">
                           <div class="card">
-                            <div class="card-body mb-4">
+                            <div class="card-body">
                               <h6 class="card-title text-center pb-2">{{receipt.time}}</h6>
                               {% for item, amount in zip(receipt["items"], receipt.amounts) %}
                               <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
                               {% endfor %}
-                              <h6 class="card-subtitle position-absolute bottom-0 p-2">TOTAL: {{receipt.total_price}}</h6>
+                              <h6 class="card-subtitle pt-2 text-center">TOTAL: {{receipt.total_price}}</h6>
                             </div>
                           </div>
                       </div>

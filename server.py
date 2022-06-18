@@ -105,7 +105,7 @@ def sell_items(json_request):
             amount_sold = []
             current_time = datetime.now()
             for item_name, sold_amount in json_request.items():
-                if (int(sold_amount) > 0):
+                if not sold_amount == "Choose amount":
                     item = Item.get(name=item_name)
                     item.amount -= int(sold_amount)
                     sold_items.append(item.name)

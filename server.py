@@ -1,3 +1,4 @@
+import math
 from flask import Flask, jsonify, make_response, render_template, request
 from pony import orm
 from datetime import datetime
@@ -118,6 +119,7 @@ def sell_items(json_request):
                     items=sold_items,
                     amounts=amount_sold,
                     total_price=total_cost)
+            generate_receipt(str(current_time))
             item_prices = []
             for sold_item in sold_items:
                 item_prices.append(float(Item.get(name=sold_item).price))
@@ -155,6 +157,107 @@ def sell_items(json_request):
             response = {"response": "Success", "data": results_list}
             return response
     except Exception as e:
+        return {"response": "Fail", "error": str(e)}
+
+
+def generate_receipt(receipt_time):
+    try:
+        def round_up(n, decimals=0):
+            multiplier = 10 ** decimals
+            return Decimal(math.ceil(n * multiplier) / multiplier)
+
+        this_receipt = Receipt.get(time=receipt_time)
+        item_prices = []
+        with orm.db_session:
+            for item in this_receipt.items:
+                item_prices.append(Item.get(name=item).price)
+        total = 0
+        for amount, price in zip(this_receipt.amounts, item_prices):
+            total += amount * price
+        with open('receipt.txt', 'w') as f:
+            f.write('                  SPAR HRVATSKA d.o.o.')
+            f.write('\n          Slavonska avenija 50, 10000 Zagreb')
+            f.write('\n            MB: 1527100 OIB: 46108893754')
+            f.write('\n               SPAR SUPERMARKET Labin')
+            f.write('\n               Pulska 2C, 52220 Labin')
+            f.write('\n')
+            f.write('\n')
+            f.write('\n*****************************************************')
+            f.write('\n                      OTVORENO')
+            f.write('\n                PON-SUB  7:00 - 21:00')
+            f.write('\n                NEDJELJA 8:00 - 21:00')
+            f.write('\n')
+            f.write('\n           SPAR - supermarket za svaki dan')
+            f.write('\n=====================================================')
+            f.write('\nNaziv artikla')
+            f.write('\nKoličina          Cijena              Iznos         P')
+            f.write('\n-----------------------------------------------------')
+            for item, amount, price in zip(this_receipt.items, this_receipt.amounts, item_prices):
+                f.write('\n')
+                f.write(item)
+                f.write('\n')
+                for _ in range(7 - len(str(amount))):
+                    f.write(' ')
+                f.write(str(amount))
+                f.write(' x')
+                for _ in range(14 - len(str(price))):
+                    f.write(' ')
+                f.write(str(price))
+                f.write(' =')
+                for _ in range(18 - len(str(amount*price))):
+                    f.write(' ')
+                f.write(str(amount*price))
+                f.write('         A')
+            f.write('\n-----------------------------------------------------')
+            f.write('\nUkupno kn')
+            for _ in range(34 - len(str(total))):
+                f.write(' ')
+            f.write(str(total))
+            f.write('\n=====================================================')
+            f.write('\nPRIMLJENO   Gotovina')
+            for _ in range(23 - len(str((round_up(total))) + ".00")):
+                f.write(' ')
+            f.write(str(round_up(total)) + ".00")
+            f.write('\nVRAĆENO     kn')
+            for _ in range(29 - len(str(round_up(total) - total))):
+                f.write(' ')
+            f.write(str(round_up(total) - total))
+            f.write('\n')
+            f.write('\nP  PDV(%)   Osnovica                   Iznos')
+            f.write('\n-----------------------------------------------------')
+            f.write('\nA   25.00')
+            for _ in range(11 - len(str(round(total * Decimal(0.75), 2)))):
+                f.write(' ')
+            f.write(str(round(total * Decimal(0.75), 2)))
+            for _ in range(24 - len(str(round(total * Decimal(0.25), 2)))):
+                f.write(' ')
+            f.write(str(round(total * Decimal(0.25), 2)))
+            # f.write('\nD    5.00')
+            f.write('\n-----------------------------------------------------')
+            f.write('\nBroj računa:')
+            f.write('\nZKI:')
+            f.write('\n')
+            f.write('\nJIR:')
+            f.write('\n')
+            f.write('\n')
+            f.write('\n')
+            f.write('\nLabin                                ')
+            f.write(datetime.strptime(this_receipt.time,
+                    "%Y-%m-%d %H:%M:%S.%f").strftime("%d.%m.%Y %H:%M"))
+            f.write('\nBlagajna 102 Trans 8388 Blagajnik 10231')
+            f.write('\n')
+            f.write('\n*****************************************************')
+            f.write('\n                   NAJLJEPŠE HVALA')
+            f.write('\n                    NA POVJERENJU')
+            f.write('\n*********************www.spar.hr*********************')
+            f.write('\n')
+            f.write('\n')
+
+        with open('receipt.txt') as f:
+            lines = f.read()
+            print(lines)
+    except Exception as e:
+        print(str(e))
         return {"response": "Fail", "error": str(e)}
 
 

@@ -24,7 +24,8 @@ class Receipt(DB.Entity):
 
 
 class ReceiptFile(DB.Entity):
-    receiptId = orm.PrimaryKey(str)
+    receiptNumber = orm.PrimaryKey(int, auto=True)
+    receiptId = orm.Required(str)
     file = orm.Required(str)
 
 
@@ -177,6 +178,10 @@ def generate_receipt(receipt_time):
         with orm.db_session:
             for item in this_receipt.items:
                 item_prices.append(Item.get(name=item).price)
+            # TODO: find out why this makes ids available
+            db_querry = orm.select(
+                x for x in Receipt if x.time == receipt_time)[:]
+            print(db_querry)
         total = 0
         for amount, price in zip(this_receipt.amounts, item_prices):
             total += amount * price
@@ -241,6 +246,9 @@ def generate_receipt(receipt_time):
             # f.write('\nD    5.00')
             f.write('\n-----------------------------------------------------')
             f.write('\nBroj računa:')
+            f.write(' ')
+            f.write(str(this_receipt.get_pk()))
+            f.write("/870272/102")
             f.write('\nZKI:')
             f.write('\n')
             f.write('\nJIR:')
@@ -540,7 +548,9 @@ def manager():
 def manager_receipt():
     receiptId = request.args["receiptId"]
     with orm.db_session:
-        receipt = ReceiptFile[receiptId].file
+        if (not ReceiptFile.get(receiptId=receiptId)):
+            generate_receipt(receiptId)
+        receipt = ReceiptFile.get(receiptId=receiptId).file
         with open('new_receipt.txt', 'w') as f:
             f.write(receipt)
             return render_template("receipt.html", receiptId=receipt)

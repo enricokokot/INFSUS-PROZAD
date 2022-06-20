@@ -259,11 +259,8 @@ def generate_receipt(receipt_time):
             f.write('\n')
             f.write('\n')
         with open('receipt.txt') as f:
-            # lines = f.read()
-            # print(lines)
             with orm.db_session:
                 ReceiptFile(receiptId=receipt_time, file=f.read())
-            # this_receipt.file = f.read()
     except Exception as e:
         print(str(e))
         return {"response": "Fail", "error": str(e)}

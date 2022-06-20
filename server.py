@@ -21,7 +21,11 @@ class Receipt(DB.Entity):
     items = orm.Required(orm.StrArray)
     amounts = orm.Required(orm.IntArray)
     total_price = orm.Required(Decimal)
-    file = orm.Optional(str)
+
+
+class ReceiptFile(DB.Entity):
+    receiptId = orm.PrimaryKey(str)
+    file = orm.Required(str)
 
 
 class DailyTraffic(DB.Entity):
@@ -119,8 +123,7 @@ def sell_items(json_request):
             Receipt(time=str(current_time),
                     items=sold_items,
                     amounts=amount_sold,
-                    total_price=total_cost,
-                    file="")
+                    total_price=total_cost)
             generate_receipt(str(current_time))
             item_prices = []
             for sold_item in sold_items:
@@ -159,6 +162,7 @@ def sell_items(json_request):
             response = {"response": "Success", "data": results_list}
             return response
     except Exception as e:
+        print("erradadada " + str(e))
         return {"response": "Fail", "error": str(e)}
 
 
@@ -257,7 +261,9 @@ def generate_receipt(receipt_time):
         with open('receipt.txt') as f:
             # lines = f.read()
             # print(lines)
-            this_receipt.file = f.read()
+            with orm.db_session:
+                ReceiptFile(receiptId=receipt_time, file=f.read())
+            # this_receipt.file = f.read()
     except Exception as e:
         print(str(e))
         return {"response": "Fail", "error": str(e)}
@@ -537,7 +543,7 @@ def manager():
 def manager_receipt():
     receiptId = request.args["receiptId"]
     with orm.db_session:
-        receipt = Receipt.get(time=receiptId).file
+        receipt = ReceiptFile[receiptId].file
         with open('new_receipt.txt', 'w') as f:
             f.write(receipt)
             return render_template("receipt.html", receiptId=receipt)

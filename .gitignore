@@ -18,7 +18,7 @@ build/
 docs/_build/
 .vscode
 *.sqlite
-receipt.txt
+*.txt
 
 # Coverage reports
 htmlcov/

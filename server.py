@@ -1,5 +1,5 @@
 import math
-from flask import Flask, jsonify, make_response, render_template, request
+from flask import Flask, jsonify, make_response, redirect, render_template, request, url_for
 from pony import orm
 from datetime import datetime
 from decimal import Decimal
@@ -21,6 +21,7 @@ class Receipt(DB.Entity):
     items = orm.Required(orm.StrArray)
     amounts = orm.Required(orm.IntArray)
     total_price = orm.Required(Decimal)
+    file = orm.Optional(str)
 
 
 class DailyTraffic(DB.Entity):
@@ -118,7 +119,8 @@ def sell_items(json_request):
             Receipt(time=str(current_time),
                     items=sold_items,
                     amounts=amount_sold,
-                    total_price=total_cost)
+                    total_price=total_cost,
+                    file="")
             generate_receipt(str(current_time))
             item_prices = []
             for sold_item in sold_items:
@@ -252,10 +254,10 @@ def generate_receipt(receipt_time):
             f.write('\n*********************www.spar.hr*********************')
             f.write('\n')
             f.write('\n')
-
         with open('receipt.txt') as f:
-            lines = f.read()
-            print(lines)
+            # lines = f.read()
+            # print(lines)
+            this_receipt.file = f.read()
     except Exception as e:
         print(str(e))
         return {"response": "Fail", "error": str(e)}
@@ -450,6 +452,13 @@ def manager():
         else:
             return make_response(jsonify(response1), 400)
 
+    elif request.method == "POST" and request.form.get("mission") == "redirect":
+        try:
+            receiptId = request.form.get("receipt")
+            return redirect(url_for('manager_receipt', receiptId=receiptId))
+        except Exception as e:
+            print(e)
+
     elif request.method == "POST":
         try:
             json_request = {}
@@ -522,6 +531,16 @@ def manager():
             return make_response(render_template("manager.html",
                                                  detailed_daily_traffic={},
                                                  zip=zip), 200)
+
+
+@app.route('/manager/receipt', methods=["GET"])
+def manager_receipt():
+    receiptId = request.args["receiptId"]
+    with orm.db_session:
+        receipt = Receipt.get(time=receiptId).file
+        with open('new_receipt.txt', 'w') as f:
+            f.write(receipt)
+            return render_template("receipt.html", receiptId=receipt)
 
 
 if __name__ == "__main__":

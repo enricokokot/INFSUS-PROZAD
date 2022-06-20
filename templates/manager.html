@@ -145,7 +145,12 @@
                   {% for item, amount in zip(receipt["items"], receipt.amounts) %}
                   <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
                   {% endfor %}
-                  <h6 class="card-subtitle p-2 text-center">TOTAL: {{receipt.total_price}}</h6>
+                  <form method="post" class="text-center" target="_blank">
+                    <h6 class="card-subtitle p-2">TOTAL: {{receipt.total_price}}</h6>
+                    <button class="btn btn-primary">OPEN</button>
+                    <input type="hidden" name="mission" value="redirect" />
+                    <input type="hidden" name="receipt" value="{{receipt.time}}" />
+                  </form>
                 </div>
               </div>
             </div>

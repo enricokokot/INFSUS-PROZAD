@@ -1,4 +1,6 @@
 import math
+import string
+import random
 from flask import Flask, jsonify, make_response, redirect, render_template, request, url_for
 from pony import orm
 from datetime import datetime
@@ -173,6 +175,9 @@ def generate_receipt(receipt_time):
             multiplier = 10 ** decimals
             return Decimal(math.ceil(n * multiplier) / multiplier)
 
+        zki = generate_zki()
+        jir = generate_jir()
+
         this_receipt = Receipt.get(time=receipt_time)
         item_prices = []
         with orm.db_session:
@@ -250,8 +255,10 @@ def generate_receipt(receipt_time):
             f.write(str(this_receipt.get_pk()))
             f.write("/870272/102")
             f.write('\nZKI:')
+            f.write(zki)
             f.write('\n')
             f.write('\nJIR:')
+            f.write(jir)
             f.write('\n')
             f.write('\n')
             f.write('\n')
@@ -272,6 +279,20 @@ def generate_receipt(receipt_time):
     except Exception as e:
         print(str(e))
         return {"response": "Fail", "error": str(e)}
+
+
+def generate_zki():
+    return ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(36))
+
+
+def generate_jir():
+    chars = string.ascii_lowercase + string.digits
+    first_row = ''.join(random.SystemRandom().choice(chars) for _ in range(8))
+    second_row = ''.join(random.SystemRandom().choice(chars) for _ in range(4))
+    third_row = ''.join(random.SystemRandom().choice(chars) for _ in range(4))
+    fourth_row = ''.join(random.SystemRandom().choice(chars) for _ in range(4))
+    fifth_row = ''.join(random.SystemRandom().choice(chars) for _ in range(12))
+    return first_row + "-" + second_row + "-" + third_row + "-" + fourth_row + "-" + fifth_row
 
 
 def delete_item(item_to_delete):

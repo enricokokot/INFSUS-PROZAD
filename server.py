@@ -239,13 +239,13 @@ def generate_receipt(receipt_time):
                 f.write(' ')
             f.write(str(round_up(total) - total))
             f.write('\n')
-            f.write('\nP  PDV(%)   Osnovica                   Iznos')
+            f.write('\nP  PDV(%)    Osnovica      Iznos')
             f.write('\n-----------------------------------------------------')
             f.write('\nA   25.00')
-            for _ in range(11 - len(str(round(total * Decimal(0.75), 2)))):
+            for _ in range(12 - len(str(round(total * Decimal(0.75), 2)))):
                 f.write(' ')
             f.write(str(round(total * Decimal(0.75), 2)))
-            for _ in range(24 - len(str(round(total * Decimal(0.25), 2)))):
+            for _ in range(11 - len(str(round(total * Decimal(0.25), 2)))):
                 f.write(' ')
             f.write(str(round(total * Decimal(0.25), 2)))
             # f.write('\nD    5.00')

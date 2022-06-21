@@ -179,17 +179,44 @@ def generate_receipt(receipt_time):
         jir = generate_jir()
 
         this_receipt = Receipt.get(time=receipt_time)
+        item_names = this_receipt.items
+        item_amounts = this_receipt.amounts
         item_prices = []
+        item_tax = []
+        categories_for_B = ["newspaper", "agriculture"]
+        categories_for_D = ["bread", "milk",
+                            "children", "book & magazine", "medicine"]
         with orm.db_session:
-            for item in this_receipt.items:
+            for item in item_names:
                 item_prices.append(Item.get(name=item).price)
+                try:
+                    item_category = Item.get(name=item).category
+                    if item_category in categories_for_D:
+                        item_tax.append("D")
+                    elif item_category in categories_for_B:
+                        item_tax.append("B")
+                    else:
+                        item_tax.append("A")
+                except Exception as e:
+                    print(e)
             # TODO: find out why this makes ids available
             db_querry = orm.select(
                 x for x in Receipt if x.time == receipt_time)[:]
             print(db_querry)
         total = 0
-        for amount, price in zip(this_receipt.amounts, item_prices):
-            total += amount * price
+        total_for_A = 0
+        total_for_B = 0
+        total_for_D = 0
+        for amount, price, tax in zip(item_amounts, item_prices, item_tax):
+            added_amount = amount * price
+            total += added_amount
+            if tax == "D":
+                total_for_D += added_amount
+            elif tax == "B":
+                total_for_B += added_amount
+            else:
+                total_for_A += added_amount
+
         with open('receipt.txt', 'w') as f:
             f.write('                  SPAR HRVATSKA d.o.o.')
             f.write('\n          Slavonska avenija 50, 10000 Zagreb')
@@ -208,7 +235,10 @@ def generate_receipt(receipt_time):
             f.write('\nNaziv artikla')
             f.write('\nKoličina          Cijena              Iznos         P')
             f.write('\n-----------------------------------------------------')
-            for item, amount, price in zip(this_receipt.items, this_receipt.amounts, item_prices):
+            for item, amount, price, tax in zip(item_names,
+                                                item_amounts,
+                                                item_prices,
+                                                item_tax):
                 f.write('\n')
                 f.write(item)
                 f.write('\n')
@@ -223,7 +253,8 @@ def generate_receipt(receipt_time):
                 for _ in range(18 - len(str(amount*price))):
                     f.write(' ')
                 f.write(str(amount*price))
-                f.write('         A')
+                f.write('         ')
+                f.write(tax)
             f.write('\n-----------------------------------------------------')
             f.write('\nUkupno kn')
             for _ in range(34 - len(str(total))):
@@ -241,14 +272,30 @@ def generate_receipt(receipt_time):
             f.write('\n')
             f.write('\nP  PDV(%)    Osnovica      Iznos')
             f.write('\n-----------------------------------------------------')
-            f.write('\nA   25.00')
-            for _ in range(12 - len(str(round(total * Decimal(0.75), 2)))):
-                f.write(' ')
-            f.write(str(round(total * Decimal(0.75), 2)))
-            for _ in range(11 - len(str(round(total * Decimal(0.25), 2)))):
-                f.write(' ')
-            f.write(str(round(total * Decimal(0.25), 2)))
-            # f.write('\nD    5.00')
+            if "A" in item_tax:
+                f.write('\nA   25.00')
+                for _ in range(12 - len(str(round(total_for_A * Decimal(0.75), 2)))):
+                    f.write(' ')
+                f.write(str(round(total_for_A * Decimal(0.75), 2)))
+                for _ in range(11 - len(str(round(total_for_A * Decimal(0.25), 2)))):
+                    f.write(' ')
+                f.write(str(round(total_for_A * Decimal(0.25), 2)))
+            if "B" in item_tax:
+                f.write('\nB   13.00')
+                for _ in range(12 - len(str(round(total_for_B * Decimal(0.87), 2)))):
+                    f.write(' ')
+                f.write(str(round(total_for_B * Decimal(0.87), 2)))
+                for _ in range(11 - len(str(round(total_for_B * Decimal(0.13), 2)))):
+                    f.write(' ')
+                f.write(str(round(total_for_B * Decimal(0.13), 2)))
+            if "D" in item_tax:
+                f.write('\nD    5.00')
+                for _ in range(12 - len(str(round(total_for_D * Decimal(0.95), 2)))):
+                    f.write(' ')
+                f.write(str(round(total_for_D * Decimal(0.95), 2)))
+                for _ in range(11 - len(str(round(total_for_D * Decimal(0.05), 2)))):
+                    f.write(' ')
+                f.write(str(round(total_for_D * Decimal(0.05), 2)))
             f.write('\n-----------------------------------------------------')
             f.write('\nBroj računa:')
             f.write(' ')

@@ -88,9 +88,18 @@
 
   </div>
 
-  <div class="container-fluid">
-    <h4 class="p-2">Remove an existing item</h4>
-    {% if items %}
+  <div class="container-fluid p-2">
+    <div id="accordionAnotherAnotherExample" class="accordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#itemDetails">
+            <h4>Items in stock</h4>
+          </button>
+        </h2>
+        <div id="itemDetails"
+        class="accordion-collapse collapse" data-bs-parent="#accordionAnotherAnotherExample">
+        <div class="accordion-body">
+          {% if items %}
     <form method="post">
       <div class="row row-cols-4 g-2">
         {% for item in items %}
@@ -122,48 +131,64 @@
       There are currently no items
     </div>
     {% endif %}
-  </div>
-
-  <div class="container-fluid">
-    <h4 class="p-2">A history of receipts</h4>
-    {% if receipts %}
-    <div id="accordionExample" class="accordion">
-      <div class="row row-cols-4 gx-2">
-        {% for receipt in receipts %}
-        <div class="col">
-          <div class="card-body mb-2">
-            <div class="accordion-item">
-              <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{"a" +
-                  receipt.time.replace(" ", "-").replace(":", "-" ).replace(".", "-" )}}">
-                  {{receipt.time}}
-                </button>
-              </h2>
-              <div id="{{"a" + receipt.time.replace(" ", "-").replace(":", "-" ).replace(".", "-" )}}"
-                class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  {% for item, amount in zip(receipt["items"], receipt.amounts) %}
-                  <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
-                  {% endfor %}
-                  <form method="post" class="text-center" target="_blank">
-                    <h6 class="card-subtitle p-2">TOTAL: {{receipt.total_price}}</h6>
-                    <button class="btn btn-primary">OPEN</button>
-                    <input type="hidden" name="mission" value="redirect" />
-                    <input type="hidden" name="receipt" value="{{receipt.time}}" />
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-        {% endfor %}
       </div>
     </div>
-    {% else %}
-    <div class="text-center p-3">
-      There are currently no receipts
+  </div>
+  </div>
+
+  <div class="container-fluid p-2">
+    <div id="accordionAnotherExample" class="accordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#receiptHistory">
+            <h4>A history of receipts</h4>
+          </button>
+        </h2>
+        <div id="receiptHistory"
+        class="accordion-collapse collapse" data-bs-parent="#accordionAnotherExample">
+        <div class="accordion-body">
+          {% if receipts %}
+          <div id="accordionExample" class="accordion">
+            <div class="row row-cols-4 gx-2">
+              {% for receipt in receipts %}
+              <div class="col">
+                <div class="card-body mb-2">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{"a" +
+                        receipt.time.replace(" ", "-").replace(":", "-" ).replace(".", "-" )}}">
+                        {{receipt.time}}
+                      </button>
+                    </h2>
+                    <div id="{{"a" + receipt.time.replace(" ", "-").replace(":", "-" ).replace(".", "-" )}}"
+                      class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        {% for item, amount in zip(receipt["items"], receipt.amounts) %}
+                        <h6 class="card-subtitle mb-2 text-muted">{{item}}: {{amount}}</h6>
+                        {% endfor %}
+                        <form method="post" class="text-center" target="_blank">
+                          <h6 class="card-subtitle p-2">TOTAL: {{receipt.total_price}}</h6>
+                          <button class="btn btn-primary">OPEN</button>
+                          <input type="hidden" name="mission" value="redirect" />
+                          <input type="hidden" name="receipt" value="{{receipt.time}}" />
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% else %}
+          <div class="text-center p-3">
+            There are currently no receipts
+          </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
-    {% endif %}
   </div>
 
   <div class="container-fluid">

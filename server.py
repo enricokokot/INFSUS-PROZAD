@@ -185,7 +185,7 @@ def generate_receipt(receipt_time):
         item_tax = []
         categories_for_B = ["newspaper", "agriculture"]
         categories_for_D = ["bread", "milk",
-                            "children", "book & magazine", "medicine"]
+                            "children", "book", "magazine", "medicine"]
         with orm.db_session:
             for item in item_names:
                 item_prices.append(Item.get(name=item).price)
@@ -217,7 +217,7 @@ def generate_receipt(receipt_time):
             else:
                 total_for_A += added_amount
 
-        with open('receipt.txt', 'w') as f:
+        with open('receipt.txt', 'w', encoding="utf-8") as f:
             f.write('                  SPAR HRVATSKA d.o.o.')
             f.write('\n          Slavonska avenija 50, 10000 Zagreb')
             f.write('\n            MB: 1527100 OIB: 46108893754')
@@ -320,7 +320,7 @@ def generate_receipt(receipt_time):
             f.write('\n*********************www.spar.hr*********************')
             f.write('\n')
             f.write('\n')
-        with open('receipt.txt') as f:
+        with open('receipt.txt', encoding="utf-8") as f:
             with orm.db_session:
                 ReceiptFile(receiptId=receipt_time, file=f.read())
     except Exception as e:
@@ -619,7 +619,7 @@ def manager_receipt():
         if (not ReceiptFile.get(receiptId=receiptId)):
             generate_receipt(receiptId)
         receipt = ReceiptFile.get(receiptId=receiptId).file
-        with open('new_receipt.txt', 'w') as f:
+        with open('new_receipt.txt', 'w', encoding="utf-8") as f:
             f.write(receipt)
             return render_template("receipt.html", receiptId=receipt)
 

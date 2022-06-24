@@ -546,6 +546,7 @@ def manager():
                     generate_receipt(receiptId)
                 receipt = ReceiptFile.get(receiptId=receiptId).file
                 with open('new_receipt.txt', 'w', encoding="utf-8") as f:
+                    receipt = "                 " + receipt
                     f.write(receipt)
                 path = "./new_receipt.txt"
                 return send_file(path, as_attachment=True)
@@ -634,6 +635,7 @@ def manager_receipt():
             generate_receipt(receiptId)
         receipt = ReceiptFile.get(receiptId=receiptId).file
         with open('new_receipt.txt', 'w', encoding="utf-8") as f:
+            receipt = "                 " + receipt
             f.write(receipt)
             return render_template("receipt.html", receiptId=receipt)
 

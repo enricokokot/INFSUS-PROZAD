@@ -6,7 +6,7 @@ Aplikacija ima 2 sučelja: kasa i menadžment.
 
 Tko se "ulogira" u kasu ima pristup svim artiklima na skladištu i bazični uvid u najnovije izdane račune.
 Artikle može dodavati u košaricu i, ukoliko dođe do prodaje, oni se miču sa zaliha i
-u bazu se šalju podaci o obavljenoj kupnji i izdanom računu koji imitira stvari račun.
+u bazu se šalju podaci o obavljenoj kupnji i izdanom računu koji imitira stvarni račun.
 
 Menadžersko sučelje ima pristup svim CRUD operacijama nad artiklima u sljedećim oblicima: dodavanja novih artikala u zalihe,
 uvid u sve artikle, promjene pojedinosti postojećih artikala (promjena imena, cijene, količine na skladištu, kategorije artikla) i

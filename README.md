@@ -10,7 +10,7 @@ u bazu se šalju podaci o obavljenoj kupnji i izdanom računu koji imitira stvar
 
 Menadžersko sučelje ima pristup svim CRUD operacijama nad artiklima u sljedećim oblicima: dodavanja novih artikala u zalihe,
 uvid u sve artikle, promjene pojedinosti postojećih artikala (promjena imena, cijene, količine na skladištu, kategorije artikla) i
-izbacivanje prisutnih artikala. Također, menadžment ima uvid u statistiku dosadašnje prodaje i može pregledati račune u izdanom formatu.
+izbacivanje prisutnih artikala. Također, menadžment ima uvid u statistiku dosadašnje prodaje i može pregledati i preuzeti račune u izdanom formatu.
 
 ## Funckionalnosti
 

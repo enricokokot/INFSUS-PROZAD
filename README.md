@@ -25,42 +25,18 @@ izbacivanje prisutnih artikala. Također, menadžment ima uvid u statistiku dosa
 Unutar projektnog direktorija kreirati sliku po uzoru na prisutni Dockerfile.
 
 ```
-# docker build --tag [naziv_slike]:[verzija_slike] .
+# docker build --tag pis-projekt:1.0 .
 ```
 
-Ispisati sve prisutne slike i među njima pronaći id upravo kreirane.
-
-```
-# docker images
-```
 
 Pokrenuti Docker kontejner temeljen na izrađenoj slici.
 
 ```
-# docker run -p 8080:8080 [id_slike]
+# docker run -p 8080:8080 pis-projekt:1.0
 ```
 
-U pregledniku posjetiti adresu localhost:8080.
-
-
-### Ukoliko imate sliku preuzetu sa [link](https://drive.google.com/file/d/1moXfYTdMgYC71_9uui9u8aDAT6bvByT3/view?usp=sharing) (potreban UNIPU mail)
-
-Učitajte sliku iz .tar datoteke
+U pregledniku posjetiti adresu.
 
 ```
-# docker load -i /put/do/datoteke/infsus-prozad.tar
+localhost:8080
 ```
-
-Ispisati sve prisutne slike i među njima pronaći id upravo kreirane.
-
-```
-# docker images
-```
-
-Pokrenuti Docker kontejner temeljen na izrađenoj slici.
-
-```
-# docker run -p 8080:8080 [id_slike]
-```
-
-U pregledniku posjetiti adresu localhost:8080.

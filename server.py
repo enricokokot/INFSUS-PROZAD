@@ -1,7 +1,7 @@
 import math
 import string
 import random
-from flask import Flask, jsonify, make_response, redirect, render_template, request, url_for
+from flask import Flask, jsonify, make_response, redirect, render_template, request, url_for, send_file
 from pony import orm
 from datetime import datetime
 from decimal import Decimal
@@ -535,6 +535,20 @@ def manager():
         try:
             receiptId = request.form.get("receipt")
             return redirect(url_for('manager_receipt', receiptId=receiptId))
+        except Exception as e:
+            print(e)
+
+    elif request.method == "POST" and request.form.get("mission") == "download":
+        try:
+            receiptId = request.form.get("receipt")
+            with orm.db_session:
+                if (not ReceiptFile.get(receiptId=receiptId)):
+                    generate_receipt(receiptId)
+                receipt = ReceiptFile.get(receiptId=receiptId).file
+                with open('new_receipt.txt', 'w', encoding="utf-8") as f:
+                    f.write(receipt)
+                path = "./new_receipt.txt"
+                return send_file(path, as_attachment=True)
         except Exception as e:
             print(e)
 

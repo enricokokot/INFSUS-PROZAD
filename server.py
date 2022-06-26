@@ -1,14 +1,12 @@
 import math
 import string
 import random
-from flask import Flask, jsonify, make_response, redirect, render_template, request, url_for, send_file
+from flask import Blueprint, Flask, jsonify, make_response, redirect, render_template, request, url_for, send_file
 from pony import orm
 from datetime import datetime
 from decimal import Decimal
 
 DB = orm.Database()
-
-app = Flask(__name__)
 
 
 class Item(DB.Entity):
@@ -407,12 +405,14 @@ def get_detailed_daily_traffic():
         return {"response": "Fail", "error": str(e)}
 
 
-@app.route('/')
+bp = Blueprint('routes', __name__, template_folder='templates')
+
+@bp.route('/')
 def home():
     return render_template('home.html')
 
 
-@app.route('/register', methods=["GET", "POST"])
+@bp.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         try:
@@ -454,7 +454,7 @@ def register():
             return make_response(render_template("register.html", zip=zip), 200)
 
 
-@app.route('/manager', methods=["POST", "GET", "PATCH", "DELETE"])
+@bp.route('/manager', methods=["POST", "GET", "PATCH", "DELETE"])
 def manager():
     if request.form.get("_method") == "PATCH":
         try:
@@ -627,7 +627,7 @@ def manager():
                                                  zip=zip), 200)
 
 
-@app.route('/manager/receipt', methods=["GET"])
+@bp.route('/manager/receipt', methods=["GET"])
 def manager_receipt():
     receiptId = request.args["receiptId"]
     with orm.db_session:
@@ -639,6 +639,9 @@ def manager_receipt():
             f.write(receipt)
             return render_template("receipt.html", receiptId=receipt)
 
+
+app = Flask(__name__)
+app.register_blueprint(bp, url_prefix='/app1')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)

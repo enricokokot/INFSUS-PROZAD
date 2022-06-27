@@ -534,7 +534,7 @@ def manager():
     elif request.method == "POST" and request.form.get("mission") == "redirect":
         try:
             receiptId = request.form.get("receipt")
-            return redirect(url_for('manager_receipt', receiptId=receiptId))
+            return redirect(url_for('routes.manager_receipt', receiptId=receiptId))
         except Exception as e:
             print(e)
 

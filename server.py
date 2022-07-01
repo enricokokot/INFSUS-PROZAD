@@ -641,7 +641,7 @@ def manager_receipt():
 
 
 app = Flask(__name__)
-app.register_blueprint(bp, url_prefix='/app1')
+app.register_blueprint(bp, url_prefix='/server/app1')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)

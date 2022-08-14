@@ -1,39 +1,36 @@
-# Informacijski Sustavi - Projektni Zadatak
+# Information Systems - Project Assignment
 
-## Opis projekta
+## Project description
 
-Aplikacija ima 2 sučelja: kasa i menadžment.
+The application has 2 interfaces: checkout and management.
 
-Tko se "ulogira" u kasu ima pristup svim artiklima na skladištu i bazični uvid u najnovije izdane račune.
-Artikle može dodavati u košaricu i, ukoliko dođe do prodaje, oni se miču sa zaliha i
-u bazu se šalju podaci o obavljenoj kupnji i izdanom računu koji imitira stvarni račun.
+Anyone who "logs into" the register has access to all items in the warehouse and basic insight into the most recently issued invoices.
+Items can be added to the basket and, if there is a sale, they are removed from the stock and information about the purchase and the invoice issued, which imitates the real invoice, is sent to the database.
 
-Menadžersko sučelje ima pristup svim CRUD operacijama nad artiklima u sljedećim oblicima: dodavanja novih artikala u zalihe,
-uvid u sve artikle, promjene pojedinosti postojećih artikala (promjena imena, cijene, količine na skladištu, kategorije artikla) i
-izbacivanje prisutnih artikala. Također, menadžment ima uvid u statistiku dosadašnje prodaje i može pregledati i preuzeti račune u izdanom formatu.
+The manager interface has access to all CRUD operations on items in the following forms: adding new items to inventory, insight into all articles, changes to the details of existing articles (change of name, price, quantity in stock, article category) and ejecting the present items. Also, the manager can review the sales statistics so far and can view and download the invoices in the issued format.
 
-## Funckionalnosti
+## Functionalities
 
 - CRUD
-- prodaja na blagajni
-- statistika u obliku grafova koji prate (1) ukupni promet po danu i (2) usporedbu broja prodanih artikala za taj dan
-- simulacija stvarnog računa
+- sales at the cash register
+- statistics in the form of graphs that monitor (1) total turnover per day and (2) comparison of the number of items sold for that day
+- simulation of a real invoice
 
-## Upute za pokretanje
+## Quick instructions
 
-Unutar projektnog direktorija kreirati sliku po uzoru na prisutni Dockerfile.
+Inside the project directory, create an image based on the existing Dockerfile.
 
 ```
 # docker build --tag pis-projekt:1.0 .
 ```
 
-Pokrenuti Docker kontejner temeljen na izrađenoj slici.
+Start a Docker container based on the created image.
 
 ```
 # docker run -p 8080:8080 pis-projekt:1.0
 ```
 
-U pregledniku posjetiti adresu.
+Visit the following address in the browser.
 
 ```
 localhost:8080
